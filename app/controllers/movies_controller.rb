@@ -7,7 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    case params[:sort]
+      when "title"
+        @class_th_title = "hilite"
+      when "release_date"
+        @class_th_release_date = "hilite"
+    end
+    @ratings_input = Hash.new
+    if params[:ratings]
+      @ratings_input = params[:ratings]
+      @movies = Movie.find(:all, :conditions => {:rating => @ratings_input.keys })
+    else
+      @movies = Movie.find(:all, :order => params[:sort])
+    end
+    @all_ratings = Movie.ratings
   end
 
   def new
